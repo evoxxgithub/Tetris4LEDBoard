@@ -15,7 +15,7 @@ public class Body implements Collidable{
         this.cells = cells;
     }
 
-    List<Cell> getCells() {
+    public List<Cell> getCells() {
         return cells;
     }
 
@@ -38,7 +38,7 @@ public class Body implements Collidable{
         }
     }
 
-    public void turn(Direction direction){
+    public void turnIfPossible(Direction direction){
         switch (direction){
             case LEFT:
                 System.out.println(""); break;
@@ -52,5 +52,30 @@ public class Body implements Collidable{
 
     public void applyGravity() {
         if (canMoveDown()) moveDown();
+    }
+
+    public void removeCell(Cell cell) {
+        this.cells.remove(cell);
+    }
+
+    public void moveByIfPossible(int x, int y) {
+        for (Cell cell : this.cells) {
+            moveCellHorizontal(x, cell);
+            moveCellVertical(y, cell);
+        }
+    }
+
+    private void moveCellVertical(int y, Cell cell) {
+        for (int i = 0; i < y; i++){
+            if (cell.canMoveDown()) cell.moveTo(cell.getX(), cell.getY()+1);
+        }
+    }
+
+    private void moveCellHorizontal(int x, Cell cell) {
+        if (x > 0){
+            for (int i = 0;i < x;i++) if (cell.canMoveRight()) cell.moveTo(cell.getX()+1, cell.getY());
+        } else {
+            for (int i = 0;i < -x;i++) if (cell.canMoveLeft()) cell.moveTo(cell.getX()-1, cell.getY());
+        }
     }
 }

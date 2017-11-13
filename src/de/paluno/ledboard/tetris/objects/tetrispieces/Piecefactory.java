@@ -77,7 +77,7 @@ public class Piecefactory {
         Cell lefttop = new Cell(5,2, drawSystem, collisionHandler, oColor, board);
         Cell bottomleft = new Cell(5,3, drawSystem, collisionHandler, oColor, board);
         Cell righttop = new Cell(6,2, drawSystem, collisionHandler, oColor, board);
-        Cell bottomright = new Cell(5,3, drawSystem, collisionHandler, oColor, board);
+        Cell bottomright = new Cell(6,3, drawSystem, collisionHandler, oColor, board);
         List<Cell> cellList = new ArrayList<>();
         cellList.add(lefttop);
         cellList.add(bottomleft);

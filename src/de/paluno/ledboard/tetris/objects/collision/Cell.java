@@ -53,11 +53,19 @@ public class Cell implements Drawable, Collidable {
        return this.y < 15 && !board.isOccupied(this.x, this.y+1);
     }
 
+    public boolean canMoveLeft(){
+        return this.x > 0 && !board.isOccupied(this.x-1, this.y);
+    }
+    public boolean canMoveRight() {
+        return this.x < 15 && !board.isOccupied(this.x+1, this.y);
+    }
+
     public void applyGravity() {
         if (this.canMoveDown()) this.moveTo(this.x, this.y+1);
     }
 
     public void removeSelf() {
+
         board.free(this.x, this.y);
         drawSystem.removeDrawable(this);
         collisionHandler.removeCell(this);

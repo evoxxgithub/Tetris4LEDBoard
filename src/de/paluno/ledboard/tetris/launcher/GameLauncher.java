@@ -9,6 +9,7 @@ import de.paluno.ledboard.tetris.objects.collision.CollisionHandler;
 import de.paluno.ledboard.tetris.objects.collision.GameBoard;
 import de.paluno.ledboard.tetris.objects.tetrispieces.Piecefactory;
 import de.paluno.ledboard.tetris.loop.TickSystem;
+import de.paluno.ledboard.tetris.victorycondition.LooseChecker;
 
 public class GameLauncher {
 
@@ -27,7 +28,8 @@ public class GameLauncher {
         ScoreCalculator scoreCalculator = new ScoreCalculator();
         RowCollapseManager rowCollapseManager = new RowCollapseManager(scoreCalculator, collisionHandler);
         TickSystem tickSystem = new TickSystem(collisionHandler, drawSystem, rowCollapseManager);
-        LoopManager loopManager = new LoopManager(boardModifier, tickSystem);
+        LooseChecker looseChecker = new LooseChecker(collisionHandler);
+        LoopManager loopManager = new LoopManager(boardModifier, tickSystem, looseChecker);
         loopManager.runloop();
     }
 }

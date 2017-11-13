@@ -9,13 +9,14 @@ import java.util.List;
 public class CollisionHandler {
 
     private final List<Cell> cellList;
-    private Body movingBody;
+    private final List<Body> movingBodies;
     private final GameBoard board;
     private final Piecefactory piecefactory;
     private final CellComparator comparator;
 
     public CollisionHandler(GameBoard board, Piecefactory piecefactory) {
         this.cellList = new ArrayList<>();
+        this.movingBodies = new ArrayList<>();
         this.board = board;
         this.piecefactory = piecefactory;
         this.comparator = new CellComparator();
@@ -29,40 +30,53 @@ public class CollisionHandler {
         this.cellList.remove(cell);
     }
 
-    public void removeRow(int y){
+    public void removeRow(int rowToRemove){
+
+        // remove all loose cells in destroyed row
         List<Cell> cellstoDelete = new ArrayList<>();
         for (Cell cell : this.cellList) {
-           if (cell.getY() == y) cellstoDelete.add(cell);
+           if (cell.getY() == rowToRemove) cellstoDelete.add(cell);
         }
         for (Cell cell : cellstoDelete) {
             cell.removeSelf();
         }
-    }
 
-
-    //removes old body and adds a new one
-    public void fixTetrisPiece(){
-
-        for (Cell cell : movingBody.getCells()) {
-            this.registerCell(cell);
+        // shatter all bodies that are within the destroyed row
+        for (Body movingBody : this.movingBodies) {
+            if (movingBody.getCells().stream().anyMatch(cell -> cell.getY() == rowToRemove))
+                shatterBody(movingBody, rowToRemove);
         }
-        movingBody = null;
     }
 
-    public void addNewBody(){
-        this.movingBody = this.piecefactory.createNewRandomPiece().getBody();
+    public void addRandomBody(){
+        this.movingBodies.add(this.piecefactory.createNewRandomPiece().getBody());
+    }
 
+    public void shatterBody(Body bodyToShatter, int rowappliedto){
+        List<Cell> cellsToRemove = new ArrayList<>();
+        List<Cell> cellsToLeaveLoose = new ArrayList<>();
+        for (Cell cell : bodyToShatter.getCells()) {
+            if (cell.getY() == rowappliedto) { cellsToRemove.add(cell); }
+            else {
+                cellsToLeaveLoose.add(cell);
+            }
+        }
+        for (Cell cell : cellsToRemove) {
+            bodyToShatter.removeCell(cell);
+        }
+        for (Cell cell : cellsToLeaveLoose) {
+            bodyToShatter.removeCell(cell);
+            this.cellList.add(cell);
+        }
     }
 
     public void calculateGravity(){
-        if (movingBody == null)
-            addNewBody();
-        System.out.println(movingBody.canMoveDown());
-        if (!movingBody.canMoveDown()) this.fixTetrisPiece();
         for (Cell cell : cellList) {
             cell.applyGravity();
         }
-        if (movingBody != null) movingBody.applyGravity();
+        for (Body movingBody : this.movingBodies) {
+            movingBody.applyGravity();
+        }
         this.cellList.sort(this.comparator);
     }
 
@@ -71,18 +85,21 @@ public class CollisionHandler {
         for (int y = 0; y < Constants.BOARDWIDTH; y++){
             boolean full = true;
             for (int x = 0; x < Constants.BOARDWIDTH; x++){
-                if (board.isOccupied(x,y)) { full = false; break; }
+                if (!board.isOccupied(x,y)) { full = false; break; }
             }
             if (full) collapsingRowsList.add(y);
         }
         return collapsingRowsList;
     }
-
-    private void setMovingBody(Body movingBody) {
-        this.movingBody = movingBody;
+    public boolean hasBody() {
+        return this.movingBodies.isEmpty();
     }
 
-    public boolean hasBody() {
-        return this.movingBody != null;
+    public boolean hasMovingPiece() {
+        return this.movingBodies.stream().anyMatch(body -> body.canMoveDown());
+    }
+
+    public List<Body> getBodies() {
+        return this.movingBodies;
     }
 }

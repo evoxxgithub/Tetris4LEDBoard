@@ -34,4 +34,15 @@ public class GameBoard {
     public boolean isOccupied(int x, int y){
         return y < 16 && x < 16 && this.occupiedBoard[x][y];
     }
+
+    public boolean isOccupiedOverScreen() {
+
+        boolean isOccupiedOverScreen = false;
+        for (int y = 0;y < 4 && !isOccupiedOverScreen; y++){
+            for (int x = 0; x < Constants.BOARDWIDTH && !isOccupiedOverScreen; x++){
+                if (this.isOccupied(x, y)) isOccupiedOverScreen = true;
+            }
+        }
+        return isOccupiedOverScreen;
+    }
 }

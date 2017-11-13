@@ -22,6 +22,7 @@ public class RowCollapseManager {
         //remove the collapsed rows
         for (Integer collapsingRow : collapsingRows) {
             this.collisionHandler.removeRow(collapsingRow);
+            System.out.println("removed row with y at: " + collapsingRow);
         }
 
     }

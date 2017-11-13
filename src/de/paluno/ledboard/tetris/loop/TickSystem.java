@@ -17,7 +17,7 @@ public class TickSystem {
     }
 
     public void tick() {
-        if (!collisionHandler.hasBody()) collisionHandler.addNewBody();
+        if (!collisionHandler.hasMovingPiece()) collisionHandler.addRandomBody();
         collisionHandler.calculateGravity();
         rowCollapseManager.computeCollapses();
         drawSystem.draw();
