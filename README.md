@@ -1,5 +1,5 @@
 # Tetris4LEDBoard #
-### This  is a fun projekt for UDE LED-Board Contest. This Application will use a LED-Board to Display a Tetris Game. LEDBoard Control API is provided by the Contest. ###
+### This  is a fun projekt for the UDE LED-Board Competition. This Application will use a LED-Board to display a Tetris Game. LED-Board Control API is provided by the Competition organizers. ###
 
 ***
 ```
